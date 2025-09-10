@@ -3,6 +3,7 @@ import getAllItemsByUserIdUseCase from "@/domain/useCases/GetAllItemsByUserIdUse
 import AddItemUseCase from "@/domain/useCases/AddItemUseCase";
 import DeleteItemUseCase from "@/domain/useCases/DeleteItemUseCase";
 import UpdateItemUseCase from "@/domain/useCases/UpdateItemUseCase";
+import RegisterUserUseCase from "@/domain/useCases/RegisterUserUseCase";
 
 class DependencyContainer {
   constructor() {
@@ -11,6 +12,7 @@ class DependencyContainer {
     this.addItem = new AddItemUseCase(this.repository);
     this.deleteItem = new DeleteItemUseCase(this.repository);
     this.updateItem = new UpdateItemUseCase(this.repository);
+    this.registerUser = new RegisterUserUseCase(this.repository);
   }
 
   getGetAllItems() {
@@ -27,6 +29,10 @@ class DependencyContainer {
 
   getUpdateItemUseCase() {
     return this.updateItem;
+  }
+
+  getRegisterUserUseCase() {
+    return this.registerUser;
   }
 }
 

@@ -1,9 +1,9 @@
-class Item {
-  constructor(id = null, username, password) {
+class User {
+  constructor(username, password, id = null) {
     this.id = id;
     this.username = username;
     this.password = password;
   }
 }
 
-export default Item;
+export default User;
