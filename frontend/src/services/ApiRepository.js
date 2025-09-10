@@ -17,4 +17,8 @@ export default class ApiRepository extends DnDRepository {
   async updateItem(item) {
     return Client.put("items", item.id, item);
   }
+
+  async registerUser(user) {
+    return Client.post("users/register", user);
+  }
 }

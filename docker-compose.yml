@@ -1,8 +1,8 @@
 services:
   frontend:
     build:
-      context: ./DnD-Inverntory-managment
-    container_name: dnd_frontend
+      context: ./frontend
+    container_name: frontend
     ports:
       - "8080:80"
     depends_on:
@@ -10,8 +10,8 @@ services:
 
   backend:
     build:
-      context: ./dnd-backend
-    container_name: dnd_backend
+      context: ./backend
+    container_name: backend
     ports:
       - "3000:3000"
     environment:
@@ -30,5 +30,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: example
       MYSQL_DATABASE: dnd
+    volumes:
+      - db_data:/var/lib/mysql
     ports:
       - "3307:3306"

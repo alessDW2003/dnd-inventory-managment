@@ -14,4 +14,8 @@ export default class DnDRepository {
   updateItem(item) {
     throw new Error("method not implemented", item.id);
   }
+
+  registerUser(user) {
+    throw new Error("method not implemented");
+  }
 }
