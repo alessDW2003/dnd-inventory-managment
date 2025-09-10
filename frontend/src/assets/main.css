@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "tailwindcss";
+
+/* Globaal font voor hele project */
+html,
+body {
+  font-family: "Roboto", ui-sans-serif, system-ui;
+}
