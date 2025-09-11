@@ -19,7 +19,7 @@ const registerUser = async () => {
 </script>
 
 <template>
-  register page dikke boktor
+  register page dikke boktor eeeeee
   <form @submit.prevent="submit">
     <input v-model="username" placeholder="Username" />
     <input type="password" v-model="password" placeholder="Password" />
