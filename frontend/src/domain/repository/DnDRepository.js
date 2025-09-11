@@ -18,4 +18,7 @@ export default class DnDRepository {
   registerUser(user) {
     throw new Error("method not implemented");
   }
+  logInUser(user) {
+    throw new Error("method not implemented");
+  }
 }

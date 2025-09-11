@@ -6,7 +6,7 @@ services:
       context: ./frontend
     container_name: frontend
     ports:
-      - "8080:80"
+      - "8020:80"
     depends_on:
       - backend
 
