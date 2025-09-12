@@ -1,6 +1,7 @@
 const ClientHelper = {
   getFullURI(relativePath, id = null) {
-    const baseUrl = "http://localhost:3000";
+    //const baseUrl = "http://localhost:3000";
+    const baseUrl = "http://backend:3000";
     if (relativePath.indexOf("/") !== 0) {
       relativePath = "/" + relativePath;
     }
