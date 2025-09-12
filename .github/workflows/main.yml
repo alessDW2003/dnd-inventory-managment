@@ -33,6 +33,6 @@ jobs:
 
       - name: Trigger Portainer stack update
         run: |
-          curl -X POST https://hook.bellton.synology.me/api/stacks/webhooks/api/stacks/webhooks/d55eb74f-0e40-4517-9cd4-a8823ef9f8a0
+          curl -X POST https://hook.bellton.synology.me/api/stacks/webhooks/663beb1f-6e5a-4dfa-b286-37d20bfd8262
 
 
