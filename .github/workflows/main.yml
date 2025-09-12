@@ -30,3 +30,9 @@ jobs:
         run: |
           docker build -t alessdw2003/backend:latest ./backend
           docker push alessdw2003/backend:latest
+
+      - name: Trigger Portainer stack update
+        run: |
+          curl -X POST https://hook.bellton.synology.me/api/stacks/webhooks/663beb1f-6e5a-4dfa-b286-37d20bfd8262
+
+
