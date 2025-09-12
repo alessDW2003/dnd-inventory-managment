@@ -1,15 +1,16 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { container } from "@/services/ServiceContainer";
 import User from "@/domain/model/User";
-import { useRouter } from "vue-router";
+import { useAuth } from "@/composables/useAuth";
+import navbar from "@/components/navbar.vue";
 
 const username = ref("");
 const password = ref("");
 const errorMessage = ref("");
-const router = useRouter();
 
 const logInUseCase = container.getLogInUserUseCase();
+const { login, isLoggedIn } = useAuth();
 
 const logInUser = async () => {
   errorMessage.value = "";
@@ -18,8 +19,8 @@ const logInUser = async () => {
       new User(username.value, password.value)
     );
 
-    if (loggedInUser) {
-      router.push("/home");
+    if (loggedInUser && loggedInUser.token) {
+      login(loggedInUser.token);
     } else {
       errorMessage.value = "Login mislukt, controleer je gegevens.";
     }
@@ -28,9 +29,17 @@ const logInUser = async () => {
     errorMessage.value = "Er ging iets mis bij het inloggen.";
   }
 };
+
+onMounted(() => {
+  if (isLoggedIn()) {
+    // Als er al een geldig token is → meteen naar home
+    login(localStorage.getItem("JWT_token"));
+  }
+});
 </script>
 
 <template>
+  <navbar />
   <form @submit.prevent="logInUser">
     <input v-model="username" placeholder="Username" />
     <input type="password" v-model="password" placeholder="Password" />

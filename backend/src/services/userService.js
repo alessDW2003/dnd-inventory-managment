@@ -5,7 +5,6 @@ const bcrypt = require("bcrypt");
 
 class UserService {
   async register(user) {
-    // validatie
     if (!user.username || !user.password) {
       throw new Error("Alle velden zijn verplicht");
     }

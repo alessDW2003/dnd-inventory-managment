@@ -2,6 +2,8 @@
 import { onMounted, ref, watch } from "vue";
 import { container } from "@/services/ServiceContainer";
 import { FilterMatchMode } from "@primevue/core/api";
+import { useAuth } from "@/composables/useAuth";
+import navbar from "@/components/navbar.vue";
 
 const items = ref([]);
 const dialogVisible = ref(false);
@@ -15,28 +17,38 @@ const options = ref([
   { label: "Jewelry", value: "jewelry" },
   { label: "Misc", value: "misc" },
 ]);
+
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
 });
+
 const selectedItem = ref({
   name: "",
   description: "",
   type: "",
   quantity: "",
 });
+
 const filteredItems = ref([]);
 const selectedFilter = ref();
+
 const getAllItemsUseCase = container.getGetAllItems();
 const addItemUseCase = container.getAddItemUseCase();
 const deleteItemUseCase = container.getDeleteItemUseCase();
 const updateItemUseCase = container.getUpdateItemUseCase();
 
+const { isLoggedIn, getUserId, getUsername, logout } = useAuth();
+
+const userId = ref();
+const username = ref();
+
 const fetchItems = async () => {
-  items.value = await getAllItemsUseCase.execute(0);
+  console.log(getUserId());
+  items.value = await getAllItemsUseCase.execute(userId.value);
+  console.log(userId.value);
   sorteerItems();
   filteredItems.value = items.value;
-  console.log(items.value);
 };
 
 const sorteerItems = () => {
@@ -44,7 +56,7 @@ const sorteerItems = () => {
     if (a.favourite === b.favourite) {
       const dateA = new Date(a.created_at);
       const dateB = new Date(b.created_at);
-      return dateB - dateA; // meest recent eerst
+      return dateB - dateA;
     }
     return a.favourite ? -1 : 1;
   });
@@ -60,7 +72,6 @@ const openDialog = (item) => {
   if (item) {
     selectedItem.value = JSON.parse(JSON.stringify(item));
   }
-
   dialogVisible.value = true;
 };
 
@@ -68,9 +79,11 @@ const deleteItem = async (item) => {
   await deleteItemUseCase.execute(item.id);
   fetchItems();
 };
+
 const refresSelectedItem = () => {
   selectedItem.value = { name: "", description: "", type: "" };
 };
+
 const addItem = async () => {
   if (
     !selectedItem.value.name ||
@@ -88,13 +101,11 @@ const addItem = async () => {
     type: selectedItem.value.type,
     quantity: selectedItem.value.quantity,
     favourite: false,
-    userId: 0,
+    userId: userId.value,
   };
 
-  console.log("New item:", newItem);
   await addItemUseCase.execute(newItem);
   fetchItems();
-  //reset form
   refresSelectedItem();
   dialogVisible.value = false;
 };
@@ -106,28 +117,34 @@ const updateFavouriteItem = async (item) => {
 };
 
 const filterItems = () => {
-  console.log("aanger", selectedFilter);
   if (selectedFilter.value !== "") {
-    console.log("hier");
     filteredItems.value = items.value.filter((item) => {
       const filter = selectedFilter.value;
 
-      if (filter === "weapon") {
-        return item.type.startsWith("weapon");
-      }
-
-      if (filter === "armor") {
-        return item.type.startsWith("armor");
-      }
+      if (filter === "weapon") return item.type.startsWith("weapon");
+      if (filter === "armor") return item.type.startsWith("armor");
 
       return item.type === filter;
     });
-  } else filteredItems.value = items.value;
+  } else {
+    filteredItems.value = items.value;
+  }
 };
 
 watch(selectedFilter, filterItems);
+
 onMounted(async () => {
-  fetchItems();
+  if (!isLoggedIn()) {
+    logout();
+    return;
+  }
+
+  userId.value = getUserId();
+  username.value = getUsername();
+  console.log(userId.value);
+  console.log(username.value);
+
+  await fetchItems();
 });
 
 const selectFilterWord = (filterWord) => {
@@ -138,7 +155,10 @@ const selectFilterWord = (filterWord) => {
   }
 };
 </script>
+
 <template>
+  <navbar />
+
   <div class="w-[1000px] mx-auto pt-2 bg-gray-200">
     <p-datatable
       v-model:filters="filters"

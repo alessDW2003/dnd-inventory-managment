@@ -11,7 +11,7 @@ const registerUserUseCase = container.getRegisterUserUseCase();
 const registerUser = async () => {
   try {
     await registerUserUseCase.execute(new User(username.value, password.value));
-    router.push("/home");
+    router.push("/");
   } catch (err) {
     console.error(err);
   }
@@ -19,7 +19,9 @@ const registerUser = async () => {
 </script>
 
 <template>
-  register page dikke boktor eeeeee testee eeeee
+  <div class="h-[60px] bg-red-300">Hier komt gebruiker info</div>
+
+  Registreer een gebruiker
   <form @submit.prevent="submit">
     <input v-model="username" placeholder="Username" />
     <input type="password" v-model="password" placeholder="Password" />
