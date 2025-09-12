@@ -1,6 +1,6 @@
 const ClientHelper = {
   getFullURI(relativePath, id = null) {
-    const baseUrl = import.meta.env.VITE_BASE_URL;
+    const baseUrl = "http://localhost:3000";
     if (relativePath.indexOf("/") !== 0) {
       relativePath = "/" + relativePath;
     }
