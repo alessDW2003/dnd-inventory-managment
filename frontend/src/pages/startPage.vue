@@ -32,7 +32,6 @@ const logInUser = async () => {
 
 onMounted(() => {
   if (isLoggedIn()) {
-    // Als er al een geldig token is → meteen naar home
     login(localStorage.getItem("JWT_token"));
   }
 });
@@ -40,16 +39,22 @@ onMounted(() => {
 
 <template>
   <navbar />
-  <form @submit.prevent="logInUser">
-    <input v-model="username" placeholder="Username" />
-    <input type="password" v-model="password" placeholder="Password" />
-    <button type="submit">Log in</button>
+  <div class="mx-auto bg-white w-1/2 mt-8 p-3">
+    <form @submit.prevent="logInUser" class="flex flex-col gap-2">
+      <input v-model="username" placeholder="Username" />
+      <input type="password" v-model="password" placeholder="Password" />
+      <button type="submit" class="w-20 bg-blue-400 rounded-md cursor-pointer">
+        Log in
+      </button>
 
-    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+      <p v-if="errorMessage" class="text-red-600">{{ errorMessage }}</p>
 
-    <p>
-      Nog geen account? registreer
-      <router-link to="/register">hier</router-link>
-    </p>
-  </form>
+      <p>
+        Nog geen account? Registreer
+        <router-link to="/register" class="text-blue-500 underline"
+          >hier</router-link
+        >
+      </p>
+    </form>
+  </div>
 </template>

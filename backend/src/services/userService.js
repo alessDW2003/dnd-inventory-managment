@@ -27,7 +27,7 @@ class UserService {
 
     const token = jwt.sign(
       { id: user.id, username: user.username },
-      JWT_SECRET,
+      "supermegasterkesecret",
       { expiresIn: "1h" }
     );
     return { token, id: user.id, username: user.username };
