@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   frontend:
     image: alessdw2003/frontend:latest

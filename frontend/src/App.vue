@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-200" style="min-height: 100vh">
+  <div class="bg-[#F5F1E6]" style="min-height: 100vh">
     <router-view />
   </div>
 </template>

@@ -22,11 +22,11 @@ const logInUser = async () => {
     if (loggedInUser && loggedInUser.token) {
       login(loggedInUser.token);
     } else {
-      errorMessage.value = "Login mislukt, controleer je gegevens.";
+      errorMessage.value = "Login failed, check credentials.";
     }
   } catch (err) {
     console.error(err);
-    errorMessage.value = "Er ging iets mis bij het inloggen.";
+    errorMessage.value = "Something went wrong";
   }
 };
 
@@ -39,22 +39,54 @@ onMounted(() => {
 
 <template>
   <navbar />
-  <div class="mx-auto bg-white w-1/2 mt-8 p-3">
-    <form @submit.prevent="logInUser" class="flex flex-col gap-2">
-      <input v-model="username" placeholder="Username" />
-      <input type="password" v-model="password" placeholder="Password" />
-      <button type="submit" class="w-20 bg-blue-400 rounded-md cursor-pointer">
-        Log in
-      </button>
+  <div class="flex justify-center items-center mt-12">
+    <div
+      class="bg-[#F5F1E6] border-2 border-[#D9B44A] rounded-2xl shadow-lg w-full max-w-md p-6"
+    >
+      <h2 class="text-2xl font-serif text-center text-[#2E2A26] mb-6">
+        Welcome back, Adventurer.
+      </h2>
 
-      <p v-if="errorMessage" class="text-red-600">{{ errorMessage }}</p>
+      <form @submit.prevent="logInUser" class="flex flex-col gap-4">
+        <!-- Username -->
+        <input
+          v-model="username"
+          placeholder="Username"
+          class="p-3 rounded-md border border-[#D9B44A] bg-white focus:outline-none focus:ring-2 focus:ring-[#7A3E9D]"
+        />
 
-      <p>
-        Nog geen account? Registreer
-        <router-link to="/register" class="text-blue-500 underline"
-          >hier</router-link
+        <!-- Password -->
+        <input
+          type="password"
+          v-model="password"
+          placeholder="Password"
+          class="p-3 rounded-md border border-[#D9B44A] bg-white focus:outline-none focus:ring-2 focus:ring-[#7A3E9D]"
+        />
+
+        <!-- Error message -->
+        <p v-if="errorMessage" class="text-red-600 font-medium text-sm">
+          {{ errorMessage }}
+        </p>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="w-full py-3 rounded-lg bg-[#7A3E9D] text-white font-semibold hover:bg-[#C97C5D] transition-colors duration-200 shadow-md"
         >
+          Log in
+        </button>
+      </form>
+
+      <!-- Register link -->
+      <p class="mt-6 text-center text-sm text-[#2E2A26]">
+        No account?
+        <router-link
+          to="/register"
+          class="text-[#355E3B] font-semibold hover:underline"
+        >
+          Register here!
+        </router-link>
       </p>
-    </form>
+    </div>
   </div>
 </template>

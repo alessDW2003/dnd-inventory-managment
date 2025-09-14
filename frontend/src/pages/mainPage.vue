@@ -159,7 +159,7 @@ const selectFilterWord = (filterWord) => {
 <template>
   <navbar />
 
-  <div class="w-[1000px] mx-auto pt-2 bg-gray-200">
+  <div class="w-[1000px] mx-auto pt-5 bg-gray-200">
     <p-datatable
       v-model:filters="filters"
       :globalFilterFields="['name']"
@@ -403,7 +403,7 @@ const selectFilterWord = (filterWord) => {
 /* Tailwind colors example: purple/indigo + beige/gold */
 /* Header van de tabel */
 .my-datatable .p-datatable-thead > tr > th {
-  background-color: #1b1b1b; /* diep zwart / donkergrijs */
+  background-color: #2e2a26; /* diep zwart / donkergrijs */
   color: #d4af37; /* zacht goud */
   font-weight: bold;
   text-align: center;
@@ -411,7 +411,7 @@ const selectFilterWord = (filterWord) => {
 
 /* Achtergrond van de hele tabel */
 .my-datatable {
-  background-color: #2c2c2c; /* donkergrijs voor my tafel */
+  background-color: #2e2a26; /* donkergrijs voor my tafel */
   color: #f5f5f5; /* lichte tekst voor leesbaarheid */
 }
 
@@ -422,7 +422,7 @@ const selectFilterWord = (filterWord) => {
 }
 
 .my-datatable .p-datatable-tbody > tr:nth-child(even) {
-  background-color: #2c2c2c; /* iets donkerder grijs */
+  background-color: #2e2a26; /* iets donkerder grijs */
   color: #f5f5f5;
 }
 .my-datatable .p-datatable-header {
