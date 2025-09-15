@@ -27,11 +27,11 @@ const selectedItem = ref({
   name: "",
   description: "",
   type: "",
-  quantity: "",
+  quantity: null,
 });
 
 const filteredItems = ref([]);
-const selectedFilter = ref();
+const selectedFilter = ref("");
 
 const getAllItemsUseCase = container.getGetAllItems();
 const addItemUseCase = container.getAddItemUseCase();
@@ -44,9 +44,7 @@ const userId = ref();
 const username = ref();
 
 const fetchItems = async () => {
-  console.log(getUserId());
   items.value = await getAllItemsUseCase.execute(userId.value);
-  console.log(userId.value);
   sorteerItems();
   filteredItems.value = items.value;
 };
@@ -64,7 +62,7 @@ const sorteerItems = () => {
 
 const updateItem = async () => {
   await updateItemUseCase.execute(selectedItem.value);
-  dialogVisible.value = false;
+  closeDialog();
   fetchItems();
 };
 
@@ -80,14 +78,19 @@ const deleteItem = async (item) => {
   fetchItems();
 };
 
-const refresSelectedItem = () => {
-  selectedItem.value = { name: "", description: "", type: "" };
+const refreshSelectedItem = () => {
+  selectedItem.value = { name: "", description: "", type: "", quantity: null };
+};
+
+const closeDialog = () => {
+  dialogVisible.value = false;
+  refreshSelectedItem();
 };
 
 const addItem = async () => {
   if (
-    !selectedItem.value.name ||
-    !selectedItem.value.description ||
+    !selectedItem.value.name.trim() ||
+    !selectedItem.value.description.trim() ||
     !selectedItem.value.type ||
     !selectedItem.value.quantity
   ) {
@@ -96,8 +99,8 @@ const addItem = async () => {
   }
 
   const newItem = {
-    name: selectedItem.value.name,
-    description: selectedItem.value.description,
+    name: selectedItem.value.name.trim(),
+    description: selectedItem.value.description.trim(),
     type: selectedItem.value.type,
     quantity: selectedItem.value.quantity,
     favourite: false,
@@ -106,18 +109,17 @@ const addItem = async () => {
 
   await addItemUseCase.execute(newItem);
   fetchItems();
-  refresSelectedItem();
-  dialogVisible.value = false;
+  closeDialog();
 };
 
 const updateFavouriteItem = async (item) => {
-  item.setFavourite(!item.isFavourite());
+  item.favourite = !item.favourite;
   await updateItemUseCase.execute(item);
   sorteerItems();
 };
 
 const filterItems = () => {
-  if (selectedFilter.value !== "") {
+  if (selectedFilter.value) {
     filteredItems.value = items.value.filter((item) => {
       const filter = selectedFilter.value;
 
@@ -141,18 +143,12 @@ onMounted(async () => {
 
   userId.value = getUserId();
   username.value = getUsername();
-  console.log(userId.value);
-  console.log(username.value);
 
   await fetchItems();
 });
 
 const selectFilterWord = (filterWord) => {
-  if (selectedFilter.value === filterWord) {
-    selectedFilter.value = "";
-  } else {
-    selectedFilter.value = filterWord;
-  }
+  selectedFilter.value = selectedFilter.value === filterWord ? "" : filterWord;
 };
 </script>
 

@@ -39,11 +39,13 @@ onMounted(() => {
 
 <template>
   <navbar />
-  <div class="flex justify-center items-center mt-12">
+  <div class="flex justify-center items-center mt-12 px-4">
     <div
-      class="bg-[#F5F1E6] border-2 border-[#D9B44A] rounded-2xl shadow-lg w-full max-w-md p-6"
+      class="w-full max-w-md p-6 rounded-2xl shadow-lg bg-[#F5F1E6] border-2 border-[#D9B44A] dark:bg-[#1E1E1E] dark:border-[#7A3E9D]"
     >
-      <h2 class="text-2xl font-serif text-center text-[#2E2A26] mb-6">
+      <h2
+        class="text-2xl font-serif text-center mb-6 text-[#2E2A26] dark:text-[#EDEADE]"
+      >
         Welcome back, Adventurer.
       </h2>
 
@@ -52,7 +54,7 @@ onMounted(() => {
         <input
           v-model="username"
           placeholder="Username"
-          class="p-3 rounded-md border border-[#D9B44A] bg-white focus:outline-none focus:ring-2 focus:ring-[#7A3E9D]"
+          class="p-3 rounded-md border focus:outline-none focus:ring-2 border-[#D9B44A] bg-white text-[#2E2A26] focus:ring-[#7A3E9D] dark:border-[#7A3E9D] dark:bg-[#2E2A26] dark:text-[#EDEADE] dark:focus:ring-[#D9B44A]"
         />
 
         <!-- Password -->
@@ -60,29 +62,32 @@ onMounted(() => {
           type="password"
           v-model="password"
           placeholder="Password"
-          class="p-3 rounded-md border border-[#D9B44A] bg-white focus:outline-none focus:ring-2 focus:ring-[#7A3E9D]"
+          class="p-3 rounded-md border focus:outline-none focus:ring-2 border-[#D9B44A] bg-white text-[#2E2A26] focus:ring-[#7A3E9D] dark:border-[#7A3E9D] dark:bg-[#2E2A26] dark:text-[#EDEADE] dark:focus:ring-[#D9B44A]"
         />
 
         <!-- Error message -->
-        <p v-if="errorMessage" class="text-red-600 font-medium text-sm">
+        <p
+          v-if="errorMessage"
+          class="text-red-600 dark:text-red-400 font-medium text-sm"
+        >
           {{ errorMessage }}
         </p>
 
         <!-- Submit -->
         <button
           type="submit"
-          class="w-full py-3 rounded-lg bg-[#7A3E9D] text-white font-semibold hover:bg-[#C97C5D] transition-colors duration-200 shadow-md"
+          class="w-full py-3 rounded-lg font-semibold shadow-md transition-colors duration-200 bg-[#7A3E9D] text-white hover:bg-[#C97C5D] dark:bg-[#355E3B] dark:hover:bg-[#4B7A57]"
         >
           Log in
         </button>
       </form>
 
       <!-- Register link -->
-      <p class="mt-6 text-center text-sm text-[#2E2A26]">
+      <p class="mt-6 text-center text-sm text-[#2E2A26] dark:text-[#EDEADE]">
         No account?
         <router-link
           to="/register"
-          class="text-[#355E3B] font-semibold hover:underline"
+          class="font-semibold hover:underline text-[#355E3B] dark:text-[#D9B44A]"
         >
           Register here!
         </router-link>
