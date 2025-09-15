@@ -1,4 +1,4 @@
-import Item from "../model/Item";
+import Item from "@/domain/model/Item";
 export default class getAllItemsByUserIdUseCase {
   constructor(repository) {
     this.repository = repository;

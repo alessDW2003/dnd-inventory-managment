@@ -1,4 +1,3 @@
-import Item from "../model/Item";
 import User from "@/domain/model/User";
 import { Roles } from "@/constants/Roles";
 export default class getAllItemsByUserIdUseCase {
@@ -12,7 +11,7 @@ export default class getAllItemsByUserIdUseCase {
     const users = [];
     usersRaw.forEach((user) => {
       newUser = new User(user.username, null, user.role);
-      if (user.role === "dm") newUser.setRole("dm");
+      if (user.role === Roles.DM) newUser.setRole("dm");
     });
     return users;
   }

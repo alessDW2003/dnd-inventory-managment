@@ -76,7 +76,7 @@ onMounted(() => {
         <!-- Submit -->
         <button
           type="submit"
-          class="w-full py-3 rounded-lg font-semibold shadow-md transition-colors duration-200 bg-[#7A3E9D] text-white hover:bg-[#C97C5D] dark:bg-[#355E3B] dark:hover:bg-[#4B7A57]"
+          class="w-full py-3 rounded-lg font-semibold shadow-md transition-colors duration-200 bg-[#7A3E9D] text-white hover:bg-[#C97C5D] dark:bg-[#355E3B] dark:hover:bg-[#4B7A57] cursor-pointer"
         >
           Log in
         </button>

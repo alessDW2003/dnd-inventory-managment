@@ -1,5 +1,5 @@
 import ApiRepository from "./ApiRepository";
-import getAllItemsByUserIdUseCase from "@/domain/useCases/GetAllItemsByUserIdUseCase";
+import getAllItemsByUserIdUseCase from "@/domain/useCases/items/GetAllItemsByUserIdUseCase";
 import AddItemUseCase from "@/domain/useCases/items/AddItemUseCase";
 import DeleteItemUseCase from "@/domain/useCases/items/DeleteItemUseCase";
 import UpdateItemUseCase from "@/domain/useCases/items/UpdateItemUseCase";
