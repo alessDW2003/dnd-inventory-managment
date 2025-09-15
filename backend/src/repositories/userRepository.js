@@ -17,5 +17,10 @@ class UserRepository {
     ]);
     return rows[0];
   }
+
+  async getAll() {
+    const [rows] = await pool.query("SELECT * FROM users");
+    return rows;
+  }
 }
 module.exports = new UserRepository();

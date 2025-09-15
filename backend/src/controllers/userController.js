@@ -34,6 +34,15 @@ class UserController {
       res.status(401).json({ error: "Invalid token" });
     }
   }
+
+  async getAll(req, res) {
+    try {
+      const users = await service.getAll();
+      res.json(users);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  }
 }
 
 module.exports = new UserController();

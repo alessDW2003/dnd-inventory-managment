@@ -32,6 +32,14 @@ class UserService {
     );
     return { token, id: user.id, username: user.username };
   }
+
+  async getAll() {
+    try {
+      return await userRepository.getAll();
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 
 module.exports = UserService;
