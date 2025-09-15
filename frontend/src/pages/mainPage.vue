@@ -6,6 +6,9 @@ import { useAuth } from "@/composables/useAuth";
 import navbar from "@/components/navbar.vue";
 
 const items = ref([]);
+const users = ref("");
+const userRole = ref("");
+const selectedUser = ref("");
 const dialogVisible = ref(false);
 const options = ref([
   { label: "Weapon (melee)", value: "weapon melee" },
@@ -149,6 +152,11 @@ onMounted(async () => {
 
 const selectFilterWord = (filterWord) => {
   selectedFilter.value = selectedFilter.value === filterWord ? "" : filterWord;
+};
+
+// dm gedeelte van het script
+const fetchUsers = () => {
+  users.value = container.getAllUsers.execute();
 };
 </script>
 
