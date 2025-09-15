@@ -25,4 +25,8 @@ export default class ApiRepository extends DnDRepository {
   async logInUser(user) {
     return Client.post("users/login", user);
   }
+
+  async getAllUsers() {
+    return Client.get("/users");
+  }
 }

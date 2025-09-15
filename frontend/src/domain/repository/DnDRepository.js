@@ -21,4 +21,8 @@ export default class DnDRepository {
   logInUser(user) {
     throw new Error("method not implemented");
   }
+
+  getAllUsers() {
+    throw new Error("method not implemented");
+  }
 }
