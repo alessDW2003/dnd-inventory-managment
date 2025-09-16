@@ -58,6 +58,18 @@ export function useAuth() {
     }
   }
 
+  function getRole() {
+    const token = getToken();
+    if (!token) return null;
+
+    try {
+      const { role } = jwtDecode(token);
+      return role;
+    } catch {
+      return null;
+    }
+  }
+
   return {
     login,
     logout,
@@ -65,5 +77,6 @@ export function useAuth() {
     isLoggedIn,
     getUserId,
     getUsername,
+    getRole,
   };
 }

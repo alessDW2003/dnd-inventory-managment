@@ -10,7 +10,7 @@ export default class getAllItemsByUserIdUseCase {
     console.log(usersRaw);
     const users = [];
     usersRaw.forEach((user) => {
-      newUser = new User(user.username, null, user.role);
+      const newUser = new User(user.username, null, user.role);
       if (user.role === Roles.DM) newUser.setRole("dm");
     });
     return users;

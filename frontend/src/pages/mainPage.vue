@@ -41,7 +41,7 @@ const addItemUseCase = container.getAddItemUseCase();
 const deleteItemUseCase = container.getDeleteItemUseCase();
 const updateItemUseCase = container.getUpdateItemUseCase();
 
-const { isLoggedIn, getUserId, getUsername, logout } = useAuth();
+const { isLoggedIn, getUserId, getUsername, logout, getRole } = useAuth();
 
 const userId = ref();
 const username = ref();
@@ -146,8 +146,10 @@ onMounted(async () => {
 
   userId.value = getUserId();
   username.value = getUsername();
-
+  userRole.value = getRole();
+  await fetchUsers();
   await fetchItems();
+  console.log(users.value);
 });
 
 const selectFilterWord = (filterWord) => {
@@ -155,13 +157,17 @@ const selectFilterWord = (filterWord) => {
 };
 
 // dm gedeelte van het script
-const fetchUsers = () => {
-  users.value = container.getAllUsers.execute();
+const fetchUsers = async () => {
+  users.value = await container.getAllUsers.execute();
 };
 </script>
 
 <template>
   <navbar />
+  <div>
+    select user to look at their inventory:
+    <p-select :value="users"> </p-select>
+  </div>
 
   <div class="w-[1000px] mx-auto pt-5 bg-gray-200">
     <p-datatable
