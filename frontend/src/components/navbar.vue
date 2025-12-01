@@ -5,7 +5,12 @@ import { useNavigation } from "@/composables/useNavigation";
 
 const { logout, isLoggedIn, getUsername, getRole } = useAuth();
 const { hasRight } = useRightManager();
-const { goIfAllowed } = useNavigation();
+const { goIfAllowed, goLogin } = useNavigation();
+
+const logOutAction = () => {
+  logout();
+  goLogin();
+};
 </script>
 
 <template>
@@ -37,7 +42,7 @@ const { goIfAllowed } = useNavigation();
 
       <button
         v-if="isLoggedIn()"
-        @click="logout"
+        @click="logOutAction()"
         class="px-4 py-2 rounded-lg bg-[#7A3E9D] text-white font-semibold hover:bg-[#C97C5D] transition-colors duration-200 shadow cursor-pointer"
       >
         Logout

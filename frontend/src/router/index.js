@@ -6,11 +6,11 @@ import {
 import { useAuth } from "@/composables/useAuth";
 import mainPage from "@/pages/InventoryPage.vue";
 import registerPage from "@/pages/RegisterPage.vue";
-import startPage from "@/pages/LoginPage.vue";
+import LoginPage from "@/pages/LoginPage.vue";
 import newCampaign from "@/pages/newCampaign.vue";
 
 const routes = [
-  { path: "/", name: "start", component: startPage },
+  { path: "/", name: "start", component: LoginPage },
   { path: "/home", name: "Home", component: mainPage },
   { path: "/register", name: "Register", component: registerPage },
   {

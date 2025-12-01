@@ -28,7 +28,8 @@ export function useAuth() {
 
   function getUserId() {
     const user = getUserFromToken();
-    return user?.id || null;
+    console.log(user.id);
+    return user?.id ?? null;
   }
 
   function getUsername() {

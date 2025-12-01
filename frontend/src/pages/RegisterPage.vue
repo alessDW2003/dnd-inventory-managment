@@ -2,29 +2,32 @@
 import { ref } from "vue";
 import { container } from "@/services/ServiceContainer";
 import User from "@/domain/model/User";
-import { useRouter } from "vue-router";
+import { useNavigation } from "@/composables/useNavigation";
 import navbar from "@/components/navbar.vue";
-import { Roles } from "@/constants/Roles";
 
 const username = ref("");
 const password = ref("");
 const passwordCheck = ref("");
 const errorMessage = ref("");
-const router = useRouter();
 
 const registerUserUseCase = container.getRegisterUserUseCase();
+const { goLogin } = useNavigation();
 
 const registerUser = async () => {
   errorMessage.value = "";
+
+  if (!username.value || !password.value) {
+    errorMessage.value = "Username or password is empty";
+    return;
+  }
 
   if (password.value !== passwordCheck.value) {
     errorMessage.value = "Passwords don't match.";
     return;
   }
-
   try {
     await registerUserUseCase.execute(new User(username.value, password.value));
-    router.push("/");
+    goLogin();
   } catch (err) {
     console.error(err);
     errorMessage.value = "Register failed, try again.";

@@ -3,14 +3,20 @@ import { onMounted, ref, watch } from "vue";
 import { container } from "@/services/ServiceContainer";
 import { FilterMatchMode } from "@primevue/core/api";
 import { useAuth } from "@/composables/useAuth";
+import { useNavigation } from "@/composables/useNavigation";
+import { useRightManager } from "@/composables/useRightManager";
 import navbar from "@/components/navbar.vue";
 import { Roles } from "@/constants/Roles";
 
+// ----------------------
+// Refs & state
+// ----------------------
 const items = ref([]);
-const users = ref("");
+const users = ref([]);
 const userRole = ref("");
 const selectedUser = ref("");
 const dialogVisible = ref(false);
+
 const options = ref([
   { label: "Weapon (melee)", value: "weapon melee" },
   { label: "Weapon (ranged)", value: "weapon ranged" },
@@ -21,6 +27,48 @@ const options = ref([
   { label: "Jewelry", value: "jewelry" },
   { label: "Misc", value: "misc" },
 ]);
+const filterButtons = [
+  {
+    label: "Misc",
+    icon: "pi pi-box",
+    value: "misc",
+    bgColor: "#3a3a3a",
+    color: "#f5f5f5",
+    border: "#666",
+  },
+  {
+    label: "Weapons",
+    icon: "pi pi-bullseye",
+    value: "weapon",
+    bgColor: "#b22222",
+    color: "#f5f5f5",
+    border: "#d4af37",
+  },
+  {
+    label: "Armor",
+    icon: "pi pi-shield",
+    value: "armor",
+    bgColor: "#2c2c2c",
+    color: "#d4af37",
+    border: "#d4af37",
+  },
+  {
+    label: "Potions",
+    icon: "pi pi-heart-fill",
+    value: "potion",
+    bgColor: "#1e40af",
+    color: "#f5f5f5",
+    border: "#d4af37",
+  },
+  {
+    label: "Jewelry",
+    icon: "pi pi-star",
+    value: "jewelry",
+    bgColor: "#d4af37",
+    color: "#1b1b1b",
+    border: "#b8860b",
+  },
+];
 
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -37,64 +85,50 @@ const selectedItem = ref({
 const filteredItems = ref([]);
 const selectedFilter = ref("");
 
+// ----------------------
+// Use Cases
+// ----------------------
 const getAllItemsUseCase = container.getGetAllItems();
 const addItemUseCase = container.getAddItemUseCase();
 const deleteItemUseCase = container.getDeleteItemUseCase();
 const updateItemUseCase = container.getUpdateItemUseCase();
+const getAllUsersUseCase = container.getAllUsers;
 
+// ----------------------
+// Composables
+// ----------------------
 const { isLoggedIn, getUserId, getUsername, logout, getRole } = useAuth();
+const { goLogin, goTo } = useNavigation();
+const { hasRight } = useRightManager();
 
+// ----------------------
+// User info
+// ----------------------
 const userId = ref();
 const username = ref();
 
+// ----------------------
+// Functions
+// ----------------------
 const fetchItems = async () => {
   items.value = await getAllItemsUseCase.execute(userId.value);
-  sorteerItems();
-  filteredItems.value = items.value;
+  sortItems();
+  filterItems();
 };
 
-const sorteerItems = () => {
-  items.value = items.value.sort((a, b) => {
+const sortItems = () => {
+  items.value.sort((a, b) => {
     if (a.favourite === b.favourite) {
-      const dateA = new Date(a.created_at);
-      const dateB = new Date(b.created_at);
-      return dateB - dateA;
+      return new Date(b.created_at) - new Date(a.created_at);
     }
     return a.favourite ? -1 : 1;
   });
 };
 
-const updateItem = async () => {
-  await updateItemUseCase.execute(selectedItem.value);
-  closeDialog();
-  fetchItems();
-};
-
-const openDialog = (item) => {
-  if (item) {
-    selectedItem.value = JSON.parse(JSON.stringify(item));
-  }
-  dialogVisible.value = true;
-};
-
-const deleteItem = async (item) => {
-  await deleteItemUseCase.execute(item.id);
-  fetchItems();
-};
-
-const refreshSelectedItem = () => {
-  selectedItem.value = { name: "", description: "", type: "", quantity: null };
-};
-
-const closeDialog = () => {
-  dialogVisible.value = false;
-  refreshSelectedItem();
-};
-
 const addItem = async () => {
   if (
-    !selectedItem.value.name.trim() ||
-    !selectedItem.value.description.trim() ||
+    !selectedItem.value.name ||
+    !selectedItem.value.description ||
     !selectedItem.value.type ||
     !selectedItem.value.quantity
   ) {
@@ -103,72 +137,103 @@ const addItem = async () => {
   }
 
   const newItem = {
-    name: selectedItem.value.name.trim(),
-    description: selectedItem.value.description.trim(),
-    type: selectedItem.value.type,
-    quantity: selectedItem.value.quantity,
+    ...selectedItem.value,
     favourite: false,
     userId: userId.value,
   };
 
   await addItemUseCase.execute(newItem);
-  fetchItems();
   closeDialog();
+  fetchItems();
+};
+
+const updateItem = async () => {
+  await updateItemUseCase.execute(selectedItem.value);
+  closeDialog();
+  fetchItems();
+};
+
+const deleteItem = async (item) => {
+  await deleteItemUseCase.execute(item.id);
+  fetchItems();
 };
 
 const updateFavouriteItem = async (item) => {
   item.favourite = !item.favourite;
   await updateItemUseCase.execute(item);
-  sorteerItems();
+  sortItems();
 };
 
+// ----------------------
+// Dialog
+// ----------------------
+const openDialog = (item) => {
+  if (item) selectedItem.value = { ...item };
+  dialogVisible.value = true;
+};
 
+const closeDialog = () => {
+  dialogVisible.value = false;
+  selectedItem.value = { name: "", description: "", type: "", quantity: null };
+};
+
+// ----------------------
+// Filters
+// ----------------------
 const filterItems = () => {
-  if (selectedFilter.value) {
-    filteredItems.value = items.value.filter((item) => {
-      const filter = selectedFilter.value;
-
-      if (filter === "weapon") return item.type.startsWith("weapon");
-      if (filter === "armor") return item.type.startsWith("armor");
-
-      return item.type === filter;
-    });
-  } else {
-    filteredItems.value = items.value;
+  if (!selectedFilter.value) {
+    filteredItems.value = [...items.value];
+    return;
   }
+
+  filteredItems.value = items.value.filter((item) => {
+    if (selectedFilter.value === "weapon")
+      return item.type.startsWith("weapon");
+    if (selectedFilter.value === "armor") return item.type.startsWith("armor");
+    return item.type === selectedFilter.value;
+  });
 };
 
 watch(selectedFilter, filterItems);
 
+const selectFilterWord = (filterWord) => {
+  selectedFilter.value = selectedFilter.value === filterWord ? "" : filterWord;
+};
+
+// ----------------------
+// DM: fetch users
+// ----------------------
+const fetchUsers = async () => {
+  if (!hasRight("DM")) return;
+  const usersRaw = await getAllUsersUseCase.execute();
+  users.value = usersRaw;
+};
+
+// ----------------------
+// Mounted
+// ----------------------
 onMounted(async () => {
   if (!isLoggedIn()) {
     logout();
+    goLogin();
     return;
   }
 
   userId.value = getUserId();
   username.value = getUsername();
   userRole.value = getRole();
-  await fetchUsers();
+
+  if (hasRight("DM")) {
+    await fetchUsers();
+  }
+
   await fetchItems();
-  console.log(users.value);
 });
-
-const selectFilterWord = (filterWord) => {
-  selectedFilter.value = selectedFilter.value === filterWord ? "" : filterWord;
-};
-
-// dm gedeelte van het script
-const fetchUsers = async () => {
-  const usersRaw = await container.getAllUsers.execute();
-  console.log(usersRaw);
-  users.value = usersRaw;
-};
 </script>
 
 <template>
   <navbar />
-  <div v-if="userRole === Roles.DM" class="dark:text-black p-3">
+  <div v-if="hasRight('DM')" class="dark:text-black p-3">
     select user to look at their inventory:
     <p-select
       v-model="selectedUser"
@@ -224,70 +289,26 @@ const fetchUsers = async () => {
             />
           </div>
           <div class="flex gap-2">
-            <!-- Misc -->
-            <p-button
-              label="Misc"
-              icon="pi pi-box"
-              @click="selectFilterWord('misc')"
-              style="
-                background-color: #3a3a3a;
-                color: #f5f5f5;
-                border: 1px solid #666;
-                border-radius: 6px;
-              "
-            />
-
-            <!-- Weapons -->
-            <p-button
-              label="Weapons"
-              icon="pi pi-bullseye"
-              @click="selectFilterWord('weapon')"
-              style="
-                background-color: #b22222;
-                color: #f5f5f5;
-                border: 1px solid #d4af37;
-                border-radius: 6px;
-              "
-            />
-
-            <!-- Armor -->
-            <p-button
-              label="Armor"
-              icon="pi pi-shield"
-              @click="selectFilterWord('armor')"
-              style="
-                background-color: #2c2c2c;
-                color: #d4af37;
-                border: 1px solid #d4af37;
-                border-radius: 6px;
-              "
-            />
-
-            <!-- Potions -->
-            <p-button
-              label="Potions"
-              icon="pi pi-heart-fill"
-              @click="selectFilterWord('potion')"
-              style="
-                background-color: #1e40af;
-                color: #f5f5f5;
-                border: 1px solid #d4af37;
-                border-radius: 6px;
-              "
-            />
-
-            <!-- Jewelry -->
-            <p-button
-              label="Jewelry"
-              icon="pi pi-star"
-              @click="selectFilterWord('jewelry')"
-              style="
-                background-color: #d4af37;
-                color: #1b1b1b;
-                border: 1px solid #b8860b;
-                border-radius: 6px;
-              "
-            />
+            <div class="flex gap-2">
+              <p-button
+                v-for="btn in filterButtons"
+                :key="btn.value"
+                :label="btn.label"
+                :icon="btn.icon"
+                @click="selectFilterWord(btn.value)"
+                :style="{
+                  backgroundColor: btn.bgColor,
+                  color: btn.color,
+                  border:
+                    (btn.value === selectedFilter ? '4px' : '2px') +
+                    ' solid ' +
+                    btn.border,
+                  borderRadius: '6px',
+                  padding: '6px 12px',
+                  cursor: 'pointer',
+                }"
+              />
+            </div>
           </div>
 
           <!-- Add knop -->

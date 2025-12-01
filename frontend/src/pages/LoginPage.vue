@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import { container } from "@/services/ServiceContainer";
 import User from "@/domain/model/User";
 import { useAuth } from "@/composables/useAuth";
+import { useNavigation } from "@/composables/useNavigation";
 import navbar from "@/components/navbar.vue";
 
 const username = ref("");
@@ -11,6 +12,7 @@ const errorMessage = ref("");
 
 const logInUseCase = container.getLogInUserUseCase();
 const { login, isLoggedIn } = useAuth();
+const { goTo, goHome } = useNavigation();
 
 const logInUser = async () => {
   errorMessage.value = "";
@@ -21,6 +23,7 @@ const logInUser = async () => {
 
     if (loggedInUser && loggedInUser.token) {
       login(loggedInUser.token);
+      goHome();
     } else {
       errorMessage.value = "Login failed, check credentials.";
     }
