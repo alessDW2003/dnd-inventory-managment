@@ -1,7 +1,11 @@
 <script setup>
 import { useAuth } from "@/composables/useAuth";
+import { useRightManager } from "@/composables/useRightManager";
+import { useNavigation } from "@/composables/useNavigation";
 
-const { logout, isLoggedIn, getUsername } = useAuth();
+const { logout, isLoggedIn, getUsername, getRole } = useAuth();
+const { hasRight } = useRightManager();
+const { goIfAllowed } = useNavigation();
 </script>
 
 <template>
@@ -16,15 +20,21 @@ const { logout, isLoggedIn, getUsername } = useAuth();
         class="h-12 w-auto drop-shadow-md"
       />
       <h1 class="font-serif text-xl text-[#2E2A26] tracking-wide">
-        Dikke Boktor
+        DnD Inventory Manager
       </h1>
     </div>
+    <p-button
+      v-if="hasRight('Admin')"
+      label="start campaign"
+      @click="goIfAllowed('/newCampaign', 'Admin')"
+    />
 
     <!-- Rechts: user info / auth -->
     <div class="flex items-center gap-4">
       <span v-if="isLoggedIn()" class="text-[#355E3B] font-medium">
-        User: {{ getUsername() }}
+        User: {{ getUsername() }} - {{ getRole() }}
       </span>
+
       <button
         v-if="isLoggedIn()"
         @click="logout"

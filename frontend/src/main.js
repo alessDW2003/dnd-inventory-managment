@@ -20,6 +20,11 @@ const app = createApp(App).use(router);
 app.use(PrimeVue, {
   theme: {
     preset: Aura,
+    options: {
+      prefix: "p",
+      darkModeSelector: "false",
+      cssLayer: false,
+    },
   },
 });
 app.component("p-datatable", DataTable);

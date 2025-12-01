@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const userRepository = require("../repositories/userRepository");
 const JWT_SECRET = process.env.JWT_SECRET; // in productie: .env
 const bcrypt = require("bcrypt");
-const { User } = require("../models/User");
+const User = require("../models/User");
 
 class UserService {
   async register(user) {
@@ -10,6 +10,7 @@ class UserService {
       throw new Error("Alle velden zijn verplicht");
     }
     try {
+      console.log(user)
       return await userRepository.createUser(user);
     } catch (err) {
       if (err.code === "ER_DUP_ENTRY") {
@@ -41,6 +42,7 @@ class UserService {
       userRaw.forEach((user) => {
         users.push(new User(user.username, user.id, user.role));
       });
+      console.log(users);
       return users;
     } catch (err) {
       throw err;

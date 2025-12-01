@@ -1,73 +1,61 @@
-import { useRouter } from "vue-router";
 import { jwtDecode } from "jwt-decode";
 
-export function useAuth() {
-  const router = useRouter();
-  const TOKEN_KEY = "JWT_token";
+const TOKEN_KEY = "JWT_token";
 
+export function useAuth() {
   function login(token) {
     localStorage.setItem(TOKEN_KEY, token);
-    router.push("/home");
   }
 
   function logout() {
     localStorage.removeItem(TOKEN_KEY);
-    router.push("/");
   }
 
   function getToken() {
     return localStorage.getItem(TOKEN_KEY);
   }
 
-  function isLoggedIn() {
-    const token = getToken();
-    if (!token) return false;
-
-    try {
-      const { exp } = jwtDecode(token);
-      if (!exp) return false;
-      return Date.now() < exp * 1000; // exp in seconden, Date.now in ms
-    } catch {
-      return false;
-    }
-  }
-
-  // 🔹 UserId uit token halen
-  function getUserId() {
+  function getUserFromToken() {
     const token = getToken();
     if (!token) return null;
 
     try {
-      const { id } = jwtDecode(token);
-      console.log(id);
-      return id;
+      return jwtDecode(token);
     } catch {
       return null;
     }
+  }
+
+  function getUserId() {
+    const user = getUserFromToken();
+    return user?.id || null;
   }
 
   function getUsername() {
-    const token = getToken();
-    if (!token) return null;
-
-    try {
-      const { username } = jwtDecode(token);
-      return username;
-    } catch {
-      return null;
-    }
+    const user = getUserFromToken();
+    return user?.username || null;
   }
 
   function getRole() {
-    const token = getToken();
-    if (!token) return null;
+    const user = getUserFromToken();
+    return user?.role || null;
+  }
 
-    try {
-      const { role } = jwtDecode(token);
-      return role;
-    } catch {
-      return null;
+  function getUser() {
+    return getUserFromToken();
+  }
+
+  function isLoggedIn() {
+    const user = getUserFromToken();
+    if (!user?.exp) return false;
+
+    const isValid = Date.now() < user.exp * 1000;
+
+    if (!isValid) {
+      logout();
     }
+
+    return isValid;
   }
 
   return {
@@ -78,5 +66,6 @@ export function useAuth() {
     getUserId,
     getUsername,
     getRole,
+    getUser,
   };
 }

@@ -12,7 +12,9 @@ export default class getAllItemsByUserIdUseCase {
     usersRaw.forEach((user) => {
       const newUser = new User(user.username, null, user.role);
       if (user.role === Roles.DM) newUser.setRole("dm");
+      users.push(newUser);
     });
+    console.log(users);
     return users;
   }
 }

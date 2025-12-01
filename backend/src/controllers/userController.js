@@ -4,6 +4,7 @@ const service = new UserService();
 class UserController {
   async register(req, res) {
     try {
+      console.log(req.body);
       const user = await service.register(req.body);
       res.json(user);
     } catch (err) {

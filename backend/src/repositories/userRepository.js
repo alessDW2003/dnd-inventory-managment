@@ -5,8 +5,8 @@ class UserRepository {
   async createUser(user) {
     const hash = await bcrypt.hash(user.password, 10);
     const [result] = await pool.query(
-      "INSERT INTO users (username, password_hash) VALUES (?, ?)",
-      [user.username, hash]
+      "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)",
+      [user.username, hash, user.role]
     );
     return { id: result.insertId, username: user.username };
   }

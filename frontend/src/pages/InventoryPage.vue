@@ -4,6 +4,7 @@ import { container } from "@/services/ServiceContainer";
 import { FilterMatchMode } from "@primevue/core/api";
 import { useAuth } from "@/composables/useAuth";
 import navbar from "@/components/navbar.vue";
+import { Roles } from "@/constants/Roles";
 
 const items = ref([]);
 const users = ref("");
@@ -121,6 +122,7 @@ const updateFavouriteItem = async (item) => {
   sorteerItems();
 };
 
+
 const filterItems = () => {
   if (selectedFilter.value) {
     filteredItems.value = items.value.filter((item) => {
@@ -158,18 +160,26 @@ const selectFilterWord = (filterWord) => {
 
 // dm gedeelte van het script
 const fetchUsers = async () => {
-  users.value = await container.getAllUsers.execute();
+  const usersRaw = await container.getAllUsers.execute();
+  console.log(usersRaw);
+  users.value = usersRaw;
 };
 </script>
 
 <template>
   <navbar />
-  <div>
+  <div v-if="userRole === Roles.DM" class="dark:text-black p-3">
     select user to look at their inventory:
-    <p-select :value="users"> </p-select>
+    <p-select
+      v-model="selectedUser"
+      :options="users"
+      option-label="username"
+      option-value="id"
+      placeholder="Select a user"
+    ></p-select>
   </div>
 
-  <div class="w-[1000px] mx-auto pt-5 bg-gray-200">
+  <div class="w-[1000px] mx-auto pt-5">
     <p-datatable
       v-model:filters="filters"
       :globalFilterFields="['name']"

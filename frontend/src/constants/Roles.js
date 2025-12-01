@@ -1,5 +1,5 @@
 export const Roles = Object.freeze({
   ADMIN: "admin",
-  USER: "user",
-  DM: "dm",
+  SPELER: "Player",
+  DM: "DM",
 });
