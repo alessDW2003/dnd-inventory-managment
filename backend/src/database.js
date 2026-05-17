@@ -1,10 +1,19 @@
 require("dotenv").config();
 const mysql = require("mysql2/promise");
 
-const ssl =
-  process.env.DB_SSL_CA
-    ? { ca: process.env.DB_SSL_CA.replace(/\\n/g, "\n") }
-    : undefined;
+function getSslConfig() {
+  if (!process.env.DB_SSL_CA) return undefined;
+
+  const ca = process.env.DB_SSL_CA
+    .trim()
+    .replace(/^['"]|['"]$/g, "")
+    .replace(/\\n/g, "\n");
+
+  return {
+    ca,
+    rejectUnauthorized: true,
+  };
+}
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
@@ -12,7 +21,7 @@ const pool = mysql.createPool({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   port: process.env.DB_PORT,
-  ssl,
+  ssl: getSslConfig(),
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
