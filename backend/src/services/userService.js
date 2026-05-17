@@ -10,7 +10,7 @@ class UserService {
       throw new Error("Alle velden zijn verplicht");
     }
     try {
-      console.log(user)
+      console.log(user);
       return await userRepository.createUser(user);
     } catch (err) {
       if (err.code === "ER_DUP_ENTRY") {

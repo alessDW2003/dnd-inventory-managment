@@ -4,9 +4,10 @@ const bcrypt = require("bcrypt");
 class UserRepository {
   async createUser(user) {
     const hash = await bcrypt.hash(user.password, 10);
+    const role = user.role || "Player";
     const [result] = await pool.query(
       "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)",
-      [user.username, hash, user.role]
+      [user.username, hash, role]
     );
     return { id: result.insertId, username: user.username };
   }
