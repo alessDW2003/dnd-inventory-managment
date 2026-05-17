@@ -5,7 +5,7 @@ class User {
     this.id = id;
     this.username = username;
     this.password = password;
-    this.role = Roles.USER;
+    this.role = Roles.SPELER;
   }
 
   setRole(role) {
