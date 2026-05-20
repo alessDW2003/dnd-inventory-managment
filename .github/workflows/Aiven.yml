@@ -1,4 +1,4 @@
-name: Aiven keepalive
+name: Aiven MySQL Keepalive
 
 on:
   schedule:
@@ -13,9 +13,17 @@ jobs:
       - name: Install MySQL client
         run: sudo apt-get update && sudo apt-get install -y mysql-client
 
-      - name: Ping Aiven database
+      - name: Create CA certificate file
+        run: |
+          echo "$CA_CERT" > ca.pem
+        env:
+          CA_CERT: ${{ secrets.CA_CERT }}
+
+      - name: Ping Aiven MySQL database
         run: |
           mysql \
+            --ssl-mode=VERIFY_CA \
+            --ssl-ca=ca.pem \
             -h "$DB_HOST" \
             -P "$DB_PORT" \
             -u "$DB_USER" \
