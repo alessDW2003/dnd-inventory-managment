@@ -10,8 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install MySQL client
-        run: sudo apt-get update && sudo apt-get install -y mysql-client
+      - name: Install MySQL client and certificates
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mysql-client ca-certificates
+          sudo update-ca-certificates
 
       - name: Create CA certificate file
         run: |
@@ -23,13 +26,12 @@ jobs:
 
       - name: Ping Aiven MySQL database
         run: |
-          mysql \
-            --ssl-mode=VERIFY_CA \
+          MYSQL_PWD="$DB_PASSWORD" mysql \
             --ssl-ca="$HOME/.mysql/ca.pem" \
+            --ssl \
             -h "$DB_HOST" \
             -P "$DB_PORT" \
             -u "$DB_USER" \
-            -p"$DB_PASSWORD" \
             "$DB_NAME" \
             -e "SELECT 1;"
         env:
