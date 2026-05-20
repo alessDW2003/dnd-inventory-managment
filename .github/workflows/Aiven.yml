@@ -15,7 +15,9 @@ jobs:
 
       - name: Create CA certificate file
         run: |
-          echo "$CA_CERT" > ca.pem
+          mkdir -p "$HOME/.mysql"
+          printf '%s\n' "$CA_CERT" > "$HOME/.mysql/ca.pem"
+          chmod 600 "$HOME/.mysql/ca.pem"
         env:
           CA_CERT: ${{ secrets.CA_CERT }}
 
@@ -23,7 +25,7 @@ jobs:
         run: |
           mysql \
             --ssl-mode=VERIFY_CA \
-            --ssl-ca=ca.pem \
+            --ssl-ca="$HOME/.mysql/ca.pem" \
             -h "$DB_HOST" \
             -P "$DB_PORT" \
             -u "$DB_USER" \
